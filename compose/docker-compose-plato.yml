@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: temporal
       POSTGRES_USER: temporal
     networks:
-      - temporal-network
+      - dokploy-network
     volumes:
       - temporal-postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -32,7 +32,7 @@ services:
       - ES_JAVA_OPTS=-Xms256m -Xmx256m
       - xpack.security.enabled=false
     networks:
-      - temporal-network
+      - dokploy-network
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=1s || exit 1"]
       interval: 5s
@@ -62,7 +62,7 @@ services:
       - ES_VERSION=v7
       - ES_VISIBILITY_INDEX=temporal_visibility_v1_dev
     networks:
-      - temporal-network
+      - dokploy-network
     volumes:
       - ./scripts:/scripts
     entrypoint: ["/bin/sh"]
@@ -86,7 +86,7 @@ services:
       - BIND_ON_IP=0.0.0.0
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
     networks:
-      - temporal-network
+      - dokploy-network
     ports:
       - '7233:7233'
     volumes:
@@ -109,7 +109,7 @@ services:
       - TEMPORAL_ADDRESS=temporal:7233
       - DEFAULT_NAMESPACE=default
     networks:
-      - temporal-network
+      - dokploy-network
     volumes:
       - ./scripts:/scripts
     entrypoint: ["/bin/sh"]
@@ -131,14 +131,13 @@ services:
       - TEMPORAL_AUTH_SCOPES=openid profile email
     image: temporalio/ui:${TEMPORAL_UI_VERSION}
     networks:
-      - temporal-network
+      - dokploy-network
     ports:
       - 8080:8080
 
 networks:
-  temporal-network:
-    driver: bridge
-    name: temporal-network
+  dokploy-network:
+    external: true
 
 volumes:
   temporal-postgres-data:
