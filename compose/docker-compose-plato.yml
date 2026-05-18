@@ -133,3 +133,7 @@ networks:
   temporal-network:
     driver: bridge
     name: temporal-network
+
+volumes:
+  temporal-postgres-data:
+    name: temporal-postgres-data
